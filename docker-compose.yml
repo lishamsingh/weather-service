@@ -8,7 +8,13 @@ services:
     env_file:
       - .env
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      ASPNETCORE_ENVIRONMENT: Development
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
 
   weather-job:
     build:
@@ -17,8 +23,10 @@ services:
     env_file:
       - .env
     environment:
-      - WeatherApi__ScheduledUrl=http://weather-api:8080/api/weather/scheduled
+      DOTNET_ENVIRONMENT: Development
+      WeatherApi__ScheduledUrl: http://weather-api:8080/api/weather/scheduled
     depends_on:
-      - weather-api
+      weather-api:
+        condition: service_healthy
     profiles:
       - job
