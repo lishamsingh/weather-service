@@ -57,7 +57,7 @@ var scheduled = app.MapPost("/api/weather/scheduled", async (
     IConfiguration config,
     CancellationToken ct) =>
 {
-    var zipCode = config["WeatherApi__ZipCode"] ?? "10001";
+    var zipCode = config["WeatherApi:ZipCode"] ?? "10001";
     var result = await provider.GetWeatherAsync(zipCode, ct);
     return result is null ? Results.NotFound() : Results.Ok(result);
 });

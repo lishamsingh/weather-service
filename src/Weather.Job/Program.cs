@@ -46,8 +46,8 @@ if (!bypassAuth)
 }
 
 // --- 3. Call scheduled endpoint with retry ---
-var url = config["WeatherApi__ScheduledUrl"]
-    ?? throw new InvalidOperationException("WeatherApi__ScheduledUrl is not configured.");
+var url = config["WeatherApi:ScheduledUrl"]
+    ?? throw new InvalidOperationException("WeatherApi:ScheduledUrl is not configured.");
 
 const int maxAttempts = 3;
 WeatherResponse? weather = null;

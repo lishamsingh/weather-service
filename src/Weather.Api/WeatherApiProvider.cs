@@ -12,7 +12,7 @@ public sealed class WeatherApiProvider : IWeatherProvider
     public WeatherApiProvider(HttpClient http, IConfiguration config)
     {
         _http = http;
-        _apiKey = config["WeatherApi__Key"] ?? throw new InvalidOperationException("WeatherApi__Key is not configured.");
+        _apiKey = config["WeatherApi:Key"] ?? throw new InvalidOperationException("WeatherApi:Key is not configured.");
     }
 
     public async Task<WeatherResponse?> GetWeatherAsync(string zipCode, CancellationToken cancellationToken = default)
