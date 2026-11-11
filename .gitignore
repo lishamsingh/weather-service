@@ -15,3 +15,8 @@ TestResults/
 
 ## macOS
 .DS_Store
+
+## IDE / local tooling
+.idea/
+.claude/settings.local.json
+.mcp.json
