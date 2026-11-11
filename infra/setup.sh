@@ -168,11 +168,15 @@ fi
 GH_SP_ID=$(az ad sp show --id "$GH_APP_ID" --query id -o tsv 2>/dev/null \
   || az ad sp create --id "$GH_APP_ID" --query id -o tsv)
 
-if [[ -z "$(az ad app federated-credential list --id "$GH_APP_ID" --query "[?name=='github-$GH_ENVIRONMENT'].name" -o tsv)" ]]; then
+# GitHub's OIDC subject includes owner and repo IDs: repo:owner@ownerId/repo@repoId:environment:env
+GH_OWNER_ID=$(gh api "repos/$GH_REPO" --jq .owner.id)
+GH_REPO_ID=$(gh api "repos/$GH_REPO" --jq .id)
+GH_SUBJECT="repo:${GH_REPO%%/*}@$GH_OWNER_ID/${GH_REPO#*/}@$GH_REPO_ID:environment:$GH_ENVIRONMENT"
+if [[ -z "$(az ad app federated-credential list --id "$GH_APP_ID" --query "[?subject=='$GH_SUBJECT'].name" -o tsv)" ]]; then
   az ad app federated-credential create --id "$GH_APP_ID" --parameters "{
-    \"name\": \"github-$GH_ENVIRONMENT\",
+    \"name\": \"github-$GH_ENVIRONMENT-ids\",
     \"issuer\": \"https://token.actions.githubusercontent.com\",
-    \"subject\": \"repo:$GH_REPO:environment:$GH_ENVIRONMENT\",
+    \"subject\": \"$GH_SUBJECT\",
     \"audiences\": [\"api://AzureADTokenExchange\"]
   }" -o none
 fi
