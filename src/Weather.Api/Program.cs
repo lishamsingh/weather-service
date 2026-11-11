@@ -26,7 +26,9 @@ else
 
     builder.Services.AddAuthorization(options =>
         options.AddPolicy(AuthPolicies.JobExecute, policy =>
-            policy.RequireClaim("roles", AuthPolicies.JobExecute)));
+            // RequireRole (not RequireClaim("roles")): the JWT handler may map the token's
+            // "roles" claim to ClaimTypes.Role, and IsInRole checks whichever type is configured.
+            policy.RequireRole(AuthPolicies.JobExecute)));
 }
 
 if (builder.Environment.IsDevelopment())
