@@ -15,15 +15,19 @@ using var app = host.Build();
 var config = app.Services.GetRequiredService<IConfiguration>();
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 
-// --- 1. Time-gate: only run at 7 AM Central (Mon–Fri) ---
+// --- 1. Time-gate: only run during the configured Central-time hour (Mon–Fri) ---
+// The cron fires at two UTC times (one for CST, one for CDT); only the one that
+// lands in RunAtCentralHour proceeds, so daylight saving is handled automatically.
 var skipTimeCheck = config.GetValue<bool>("Job:SkipTimeCheck");
 if (!skipTimeCheck)
 {
+    var runAtHour = config.GetValue("Job:RunAtCentralHour", 16);
     var central = TimeZoneInfo.FindSystemTimeZoneById("America/Chicago");
     var now = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, central);
-    if (now.Hour != 7)
+    if (now.Hour != runAtHour)
     {
-        logger.LogInformation("Time check skipped: Central time is {Time}. Expected 7 AM.", now.ToString("HH:mm"));
+        logger.LogInformation("Time check skipped: Central time is {Time}. Expected hour {Hour}:00.",
+            now.ToString("HH:mm"), runAtHour);
         return 0;
     }
 }

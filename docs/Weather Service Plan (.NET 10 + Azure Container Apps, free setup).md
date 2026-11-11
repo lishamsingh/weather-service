@@ -4,7 +4,7 @@ Prepared for a Mac mini (M1) using VS Code, GitHub Free and Azure free tiers.
 
 ## 1. Goal
 
-A .NET 10 backend with two weather endpoints and a console job. The job calls the scheduled endpoint **Monday to Friday at 7 AM Central US time**. Everything lives in one public GitHub repo, is built by GitHub Actions, and runs on Azure Container Apps as containers.
+A .NET 10 backend with two weather endpoints and a console job. The job calls the scheduled endpoint **Monday to Friday at 4:30 PM Central US time**. Everything lives in one public GitHub repo, is built by GitHub Actions, and runs on Azure Container Apps as containers.
 
 ## 2. Decisions and defaults
 
@@ -53,7 +53,7 @@ weather-service/
 
 - Gets a token with `DefaultAzureCredential`, calls the scheduled endpoint, logs the result.
 - Exits non-zero on failure so Azure marks the run failed. Retries transient failures.
-- **Schedule:** Container Apps cron is UTC only, so use `0 12,13 * * 1-5`. The app checks the time in `America/Chicago` and exits quietly unless it is 7 AM there. This handles daylight saving automatically.
+- **Schedule:** Container Apps cron is UTC only, so use `30 21,22 * * 1-5`. The app checks the time in `America/Chicago` and exits quietly unless it is the 4 PM hour there (`Job:RunAtCentralHour`, default 16). This handles daylight saving automatically.
 
 ## 6. Docker
 

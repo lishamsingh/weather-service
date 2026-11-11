@@ -32,7 +32,7 @@ API_IMAGE="ghcr.io/lishamsingh/weather-api:latest"
 JOB_IMAGE="ghcr.io/lishamsingh/weather-job:latest"
 WEATHER_ZIP="10001"
 BUDGET_AMOUNT=1
-CRON="0 12,13 * * 1-5"   # UTC; the job itself only proceeds at 7 AM America/Chicago
+CRON="30 21,22 * * 1-5"  # UTC; the job itself only proceeds at 4:30 PM America/Chicago
 
 : "${WEATHERAPI_KEY:?Set WEATHERAPI_KEY}"
 : "${API_KEY:?Set API_KEY}"
